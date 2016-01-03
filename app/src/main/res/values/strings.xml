@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Alexandria</string>
+    <string name="app_name" translatable="false">Alexandria</string>
 
     <!-- Menu Items -->
     <string name="books">List of Books</string>
@@ -31,7 +31,7 @@
     <string name="book_saved">Book saved to book list</string>
     <string name="book_deleted">delete book</string>
     <string name="book_saved_before">Already savrd Book</string>
-    <string name="books_api">https://www.googleapis.com/books/v1/volumes</string>
+    <string name="books_api" translatable="false">https://www.googleapis.com/books/v1/volumes </string>
     <string name="book_not_found">No Book Found</string>
     <string name="scanner_prompt">Start Scan</string>
     <string name="no_network">No Network please turn on</string>
