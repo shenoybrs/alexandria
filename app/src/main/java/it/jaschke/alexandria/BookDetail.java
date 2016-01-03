@@ -33,6 +33,22 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private String bookTitle;
     private ShareActionProvider shareActionProvider;
 
+
+    public interface BookDetailCallbacks {
+        /**
+         * Set the drawer icon
+         * @param backToHome boolean
+         */
+        void toggleToolbarDrawerIndicator(boolean backToHome);
+        /**
+         * Called when a book is deleted, to reload the booklist
+         * @param position int
+         */
+        void onNavigationDrawerItemSelected(int position);
+    }
+
+
+
     public BookDetail(){
     }
 
@@ -63,6 +79,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+        getActivity().setTitle(R.string.detail);
+        ((BookDetailCallbacks) getActivity()).toggleToolbarDrawerIndicator(true);
         return rootView;
     }
 
@@ -126,9 +144,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
 
-        if(rootView.findViewById(R.id.right_container)!=null){
-            rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
-        }
+
 
     }
 

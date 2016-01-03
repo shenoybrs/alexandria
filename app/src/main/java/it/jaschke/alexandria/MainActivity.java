@@ -15,14 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback ,BookDetail.BookDetailCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -80,6 +79,13 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     }
 
     @Override
+    public void toggleToolbarDrawerIndicator(boolean backToHome) {
+        if(findViewById(R.id.right_container) == null) {
+            navigationDrawerFragment.toggleToolbarDrawerIndicator(backToHome);
+        }
+    }
+
+    @Override
     public void onNavigationDrawerItemSelected(int position) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -103,10 +109,14 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 .replace(R.id.container, nextFragment)
                 .addToBackStack((String) title)
                 .commit();
+
+        // prevent the keyboard from appearing oncreateview of the fragment
+        Utility.hideKeyboardFromActivity(this);
     }
 
     public void setTitle(int titleId) {
         title = getString(titleId);
+		mToolbarTitle.setText(title);
     }
 
     public void restoreActionBar() {
@@ -126,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
             getMenuInflater().inflate(R.menu.main, menu);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
-                mToolbarTitle.setText(getTitle());
+                mToolbarTitle.setText(title);
             }
             return true;
         }
@@ -143,6 +153,21 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        }else if (item.getItemId() == android.R.id.home) {
+
+            // hide keyboard when the drawer is opened
+            Utility.hideKeyboardFromActivity(this);
+
+            // if we are not on a tablet in landscape mode
+            if(findViewById(R.id.right_container) == null) {
+
+                // if we are coming back from the bookdetail fragment, reset the hamburger
+                if (title.equals(getString(R.string.detail))) {
+                    getSupportFragmentManager().popBackStack();
+                    toggleToolbarDrawerIndicator(false);
+                    return true;
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -182,8 +207,27 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
     }
 
-    public void goBack(View view){
-        getSupportFragmentManager().popBackStack();
+    @Override
+    public void onBackPressed() {
+
+        // only close the drawer if it's opened
+        if (navigationDrawerFragment.isDrawerOpen()) {
+            navigationDrawerFragment.closeDrawer();
+            return;
+        }
+
+        // if we are coming back from the book detail fragment, reset the hamburger icon
+        if (getTitle().equals(getString(R.string.detail))) {
+            toggleToolbarDrawerIndicator(false);
+        }
+
+        // if there is only 1 fragment on the backstack, it is a 'main' fragment and we have
+        //  nowhere to return to, but exit
+        if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
+            finish();
+        }
+
+        super.onBackPressed();
     }
 
     private boolean isTablet() {
@@ -192,13 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    @Override
-    public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
-            finish();
-        }
-        super.onBackPressed();
-    }
+
 
 
 }

@@ -35,4 +35,6 @@
     <string name="book_not_found">No Book Found</string>
     <string name="scanner_prompt">Start Scan</string>
     <string name="no_network">No Network please turn on</string>
+    <string name="detail">Book Detail</string>
+    <string name="search_for_the_book_from_collection">Search book from list</string>
 </resources>
