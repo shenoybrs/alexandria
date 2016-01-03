@@ -49,11 +49,15 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
